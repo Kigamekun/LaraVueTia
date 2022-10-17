@@ -45,7 +45,7 @@
                                         <button
                                             class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="button" :data-id="post.id" :data-name="post.name" :data-pengarang="post.pengarang" :data-penerbit="post.penerbit"
-                                            v-on:click="toggleModalUpdate($event)"
+                                            v-on:click="toggleModalUpdateData($event)"
                                         >
                                             Update
                                         </button>
@@ -71,28 +71,22 @@
             <div class="relative w-auto my-6 mx-auto max-w-6xl">
                 <!--content-->
                 <div  class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <Modals :title="modalUpdateData.title" :penerbit="modalUpdateData.penerbit" :pengarang="modalUpdateData.pengarang">
+                <Modals @updateEvent='toggleModalUpdate' :title="modalUpdateData.title" :penerbit="modalUpdateData.penerbit" :pengarang="modalUpdateData.pengarang">
 
                 </Modals>
-
                 </div>
             </div>
         </div>
         <div
             v-if="showModalUpdate"
-            class="opacity-25 fixed inset-0 z-40 bg-black"
-        ></div>
-
+            class="opacity-25 fixed inset-0 z-40 bg-black"></div>
         <div>
             <div
                 v-if="showModal"
-                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
-            >
+                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
                 <div class="relative w-auto my-6 mx-auto max-w-6xl">
                     <!--content-->
-                    <div
-                        class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
-                    >
+                    <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                         <!--header-->
                         <div
                             class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t"
@@ -225,10 +219,7 @@
                     </div>
                 </div>
             </div>
-            <div
-                v-if="showModal"
-                class="opacity-25 fixed inset-0 z-40 bg-black"
-            ></div>
+            <div v-if="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </div>
     </BreezeAuthenticatedLayout>
 </template>
@@ -279,10 +270,13 @@ export default {
         toggleModal: function () {
             this.showModal = !this.showModal;
         },
-        toggleModalUpdate: function (e) {
-            this.title = e.currentTarget.title;
-            this.pengarang = e.currentTarget.pengarang;
-            this.penerbit = e.currentTarget.penerbit;
+        toggleModalUpdate: function () {
+            this.showModalUpdate = !this.showModalUpdate;
+        },
+        toggleModalUpdateData: function (e) {
+            this.title = e.currentTarget.getAttribute('data-title');
+            this.pengarang = e.currentTarget.getAttribute('data-pengarang');
+            this.penerbit = e.currentTarget.getAttribute('data-penerbit');
             this.showModalUpdate = !this.showModalUpdate;
         },
         submit() {

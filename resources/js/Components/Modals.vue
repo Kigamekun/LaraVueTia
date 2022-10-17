@@ -111,7 +111,7 @@
             <button
                 class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                v-on:click="toggleModalUpdate()"
+                v-on:click="this.$emit('updateEvent')"
             >
                 Close
             </button>
@@ -145,9 +145,9 @@ export default {
     },
     setup() {
         const form = useForm({
-            title: null,
-            pengarang: null,
-            penerbit: null,
+            title: this.$parent('title'),
+            pengarang: this.$parent('pengarang'),
+            penerbit: this.$parent('penerbit'),
         });
 
         return { form };
@@ -159,10 +159,7 @@ export default {
         toggleModal: function () {
             this.showModal = !this.showModal;
         },
-        toggleModalUpdate: function (e) {
-            console.log('ada');
-            this.showModalUpdate = !this.showModalUpdate;
-        },
+
         submit() {
             this.form.post(route("books.store"));
         },
