@@ -4,7 +4,7 @@
     <BreezeAuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Post
+                Book
             </h2>
         </template>
 
@@ -25,15 +25,15 @@
                     <div class="p-6 bg-white border-b border-gray-200">
                         <table style="width: 100%">
                             <thead class="font-bold bg-gray-300 border-b-2">
-                                <td class="px-4 py-2">ID</td>
+                                <td class="px-4 py-2">No</td>
                                 <td class="px-4 py-2">Title</td>
                                 <td class="px-4 py-2">Author</td>
                                 <td class="px-4 py-2">Publisher</td>
                                 <td class="px-4 py-2">Action</td>
                             </thead>
                             <tbody>
-                                <tr v-for="post in books.data" :key="post.id">
-                                    <td class="px-4 py-2">{{ post.id }}</td>
+                                <tr v-for="(post, index) in books.data" :key="post.id">
+                                    <td class="px-4 py-2">{{ index + 1 }}</td>
                                     <td class="px-4 py-2">{{ post.title }}</td>
                                     <td class="px-4 py-2">
                                         {{ post.pengarang }}
@@ -44,7 +44,7 @@
                                     <td class="px-4 py-2 font-extrabold">
                                         <button
                                             class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                            type="button" :data-id="post.id" :data-name="post.name" :data-pengarang="post.pengarang" :data-penerbit="post.penerbit"
+                                            type="button" :data-id="post.id" :data-title="post.title" :data-pengarang="post.pengarang" :data-penerbit="post.penerbit"
                                             v-on:click="toggleModalUpdateData($event)"
                                         >
                                             Update
@@ -71,7 +71,7 @@
             <div class="relative w-auto my-6 mx-auto max-w-6xl">
                 <!--content-->
                 <div  class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <Modals @updateEvent='toggleModalUpdate' :title="modalUpdateData.title" :penerbit="modalUpdateData.penerbit" :pengarang="modalUpdateData.pengarang">
+                <Modals @updateEvent='toggleModalUpdate' :id="modalUpdateData.id" :title="modalUpdateData.title" :penerbit="modalUpdateData.penerbit" :pengarang="modalUpdateData.pengarang">
 
                 </Modals>
                 </div>
@@ -86,7 +86,8 @@
                 class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
                 <div class="relative w-auto my-6 mx-auto max-w-6xl">
                     <!--content-->
-                    <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div
+                        class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                         <!--header-->
                         <div
                             class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t"
@@ -230,7 +231,7 @@ import BreezeNavLink from "@/Components/NavLink.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Link } from "@inertiajs/inertia-vue3";
 import { useForm } from "@inertiajs/inertia-vue3";
-import Modals from '@/Components/Modals.vue';
+import Modals from '@/Components/ModalUpdateBook.vue';
 
 export default {
     components: {
@@ -248,10 +249,12 @@ export default {
             showModal: false,
             showModalUpdate: false,
             modalUpdateData: {
-                title: "",
-                pengarang: "",
-                penerbit: "",
+                id: null,
+                title: null,
+                pengarang: null,
+                penerbit: null,
             },
+
         };
     },
     setup() {
@@ -274,9 +277,12 @@ export default {
             this.showModalUpdate = !this.showModalUpdate;
         },
         toggleModalUpdateData: function (e) {
-            this.title = e.currentTarget.getAttribute('data-title');
-            this.pengarang = e.currentTarget.getAttribute('data-pengarang');
-            this.penerbit = e.currentTarget.getAttribute('data-penerbit');
+
+            this.modalUpdateData.id = e.currentTarget.getAttribute('data-id');
+            this.modalUpdateData.title = e.currentTarget.getAttribute('data-title');
+            this.modalUpdateData.pengarang = e.currentTarget.getAttribute('data-pengarang');
+            this.modalUpdateData.penerbit = e.currentTarget.getAttribute('data-penerbit');
+
             this.showModalUpdate = !this.showModalUpdate;
         },
         submit() {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Redirect;
 
 class CategoryController extends Controller
 {
@@ -20,16 +21,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,12 +28,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-
         Category::create([
             'name'=>$request->name,
-
             ]);
-
         return Redirect::route('categories.index');
     }
 
@@ -75,16 +63,12 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $categories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $categories)
+    public function update(Request $request, Category $category)
     {
-        $data = Request::validate([
-            'title' => ['required', 'max:90'],
-            'description' => ['required'],
-        ]);
-        $post->update($data);
-
-
-        return Redirect::route('posts.index');
+        $category->update([
+            'name'=>$request->name,
+            ]);
+        return Redirect::route('categories.index');
     }
 
     /**
@@ -93,10 +77,9 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $categories
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $categories)
+    public function destroy(Category $category)
     {
-        $categories->delete();
-
+        $category->delete();
         return Redirect::route('categories.index');
     }
 }

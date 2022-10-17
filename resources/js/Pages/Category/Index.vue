@@ -4,7 +4,7 @@
     <BreezeAuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Post
+                Category
             </h2>
         </template>
 
@@ -25,29 +25,24 @@
                     <div class="p-6 bg-white border-b border-gray-200">
                         <table style="width: 100%">
                             <thead class="font-bold bg-gray-300 border-b-2">
-                                <td class="px-4 py-2">ID</td>
+                                <td class="px-4 py-2">No</td>
                                 <td class="px-4 py-2">Name</td>
 
                                 <td class="px-4 py-2">Action</td>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="category in categories.data"
-                                    :key="category.id"
-                                >
-                                    <td class="px-4 py-2">{{ category.id }}</td>
-                                    <td class="px-4 py-2">
-                                        {{ category.name }}
-                                    </td>
+                                <tr v-for="(category, index) in categories.data" :key="category.id">
+                                    <td class="px-4 py-2">{{ index + 1 }}</td>
+                                    <td class="px-4 py-2">{{ category.name }}</td>
 
                                     <td class="px-4 py-2 font-extrabold">
-                                        <!-- <button
+                                        <button
                                             class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                            type="button" :data-id="category.id" :data-name="category.name" :data-pengarang="category.pengarang" :data-penerbit="post.penerbit"
-                                            v-on:click="toggleModalUpdate($event)"
+                                            type="button" :data-id="category.id" :data-name="category.name"
+                                            v-on:click="toggleModalUpdateData($event)"
                                         >
                                             Update
-                                        </button> -->
+                                        </button>
                                         <Link
                                             @click="destroy(category.id)"
                                             class="text-red-700"
@@ -69,40 +64,29 @@
         >
             <div class="relative w-auto my-6 mx-auto max-w-6xl">
                 <!--content-->
-                <div
-                    class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
-                >
-                    <Modals
-                        :title="modalUpdateData.title"
-                        :penerbit="modalUpdateData.penerbit"
-                        :pengarang="modalUpdateData.pengarang"
-                    >
-                    </Modals>
+                <div  class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                <Modals @updateEvent='toggleModalUpdate' :id="modalUpdateData.id" :name="modalUpdateData.name">
+
+                </Modals>
                 </div>
             </div>
         </div>
         <div
             v-if="showModalUpdate"
-            class="opacity-25 fixed inset-0 z-40 bg-black"
-        ></div>
-
+            class="opacity-25 fixed inset-0 z-40 bg-black"></div>
         <div>
             <div
                 v-if="showModal"
-                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
-            >
+                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
                 <div class="relative w-auto my-6 mx-auto max-w-6xl">
                     <!--content-->
                     <div
-                        class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
-                    >
+                        class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                         <!--header-->
                         <div
                             class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t"
                         >
-                            <h3 class="text-3xl font-semibold">
-                                Create categories
-                            </h3>
+                            <h3 class="text-3xl font-semibold">Create Books</h3>
                             <button
                                 class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                                 v-on:click="toggleModal()"
@@ -123,7 +107,7 @@
                                             class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                             for="grid-password"
                                         >
-                                            Name
+                                            Title
                                         </label>
                                         <input
                                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -131,6 +115,10 @@
                                             type="text"
                                             v-model="form.name"
                                         />
+                                        <p class="text-gray-600 text-xs italic">
+                                            Make it as long and as crazy as
+                                            you'd like
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -156,10 +144,7 @@
                     </div>
                 </div>
             </div>
-            <div
-                v-if="showModal"
-                class="opacity-25 fixed inset-0 z-40 bg-black"
-            ></div>
+            <div v-if="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </div>
     </BreezeAuthenticatedLayout>
 </template>
@@ -170,7 +155,7 @@ import BreezeNavLink from "@/Components/NavLink.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import { Link } from "@inertiajs/inertia-vue3";
 import { useForm } from "@inertiajs/inertia-vue3";
-import Modals from "@/Components/Modals.vue";
+import Modals from '@/Components/ModalUpdateCategory.vue';
 
 export default {
     components: {
@@ -178,7 +163,7 @@ export default {
         Head,
         BreezeNavLink,
         Link,
-        Modals,
+        Modals
     },
     props: {
         categories: Object,
@@ -188,9 +173,8 @@ export default {
             showModal: false,
             showModalUpdate: false,
             modalUpdateData: {
-                title: "AAAA",
-                pengarang: "",
-                penerbit: "",
+                id: null,
+                name: null,
             },
         };
     },
@@ -208,10 +192,13 @@ export default {
         toggleModal: function () {
             this.showModal = !this.showModal;
         },
-        toggleModalUpdate: function (e) {
-            this.title = "adaaa";
-            this.pengarang = e.currentTarget.pengarang;
-            this.penerbit = e.currentTarget.penerbit;
+        toggleModalUpdate: function () {
+            this.showModalUpdate = !this.showModalUpdate;
+        },
+        toggleModalUpdateData: function (e) {
+
+            this.modalUpdateData.id = e.currentTarget.getAttribute('data-id');
+            this.modalUpdateData.name = e.currentTarget.getAttribute('data-name');
             this.showModalUpdate = !this.showModalUpdate;
         },
         submit() {

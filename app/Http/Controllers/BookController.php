@@ -17,18 +17,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::latest()->paginate(10);
-
         return Inertia::render('Book/Index', ['books' => $books]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -39,7 +28,6 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-
         Book::create([
             'title'=>$request->title,
             'penerbit'=>$request->penerbit,
@@ -49,27 +37,6 @@ class BookController extends Controller
         return Redirect::route('books.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -80,14 +47,13 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $data = Request::validate([
-            'title' => ['required', 'max:90'],
-            'description' => ['required'],
+        $book->update([
+            'title'=>$request->title,
+            'penerbit'=>$request->penerbit,
+            'pengarang'=>$request->pengarang
         ]);
-        $post->update($data);
 
-
-        return Redirect::route('posts.index');
+        return Redirect::route('books.index');
     }
 
     /**
