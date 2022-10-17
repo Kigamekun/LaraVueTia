@@ -39,14 +39,14 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        Post::create(
-            Request::validate([
-                'title' => ['required', 'max:90'],
-                'description' => ['required'],
-            ])
-        );
 
-        return Redirect::route('posts.index');
+        Book::create([
+            'title'=>$request->title,
+            'penerbit'=>$request->penerbit,
+            'pengarang'=>$request->pengarang,
+            ]);
+
+        return Redirect::route('books.index');
     }
 
     /**

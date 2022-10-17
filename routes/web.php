@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\{BookController,CategoryController};
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +32,4 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::resource('books', BookController::class);
+Route::resource('categories', CategoryController::class);
