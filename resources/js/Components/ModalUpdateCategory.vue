@@ -32,7 +32,6 @@
                     />
                 </div>
             </div>
-
         </div>
         <div
             class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b"
@@ -71,14 +70,13 @@ export default {
             form: {
                 id: this.id,
                 name: this.name,
-
             },
         };
     },
     methods: {
         submit() {
             const form = useForm(this.form);
-            form.put(route("categories.update",this.id));
+            form.put(route("categories.update", this.id));
         },
     },
 };

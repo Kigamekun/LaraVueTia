@@ -31,5 +31,7 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::resource('books', BookController::class);
-Route::resource('categories', CategoryController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('books', BookController::class);
+    Route::resource('categories', CategoryController::class);
+});

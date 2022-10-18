@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Models\{Book,Category};
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
@@ -17,7 +17,24 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::latest()->paginate(10);
-        return Inertia::render('Book/Index', ['books' => $books]);
+        $books->getCollection()->transform(function ($value) {
+            $datas = [];
+            $datas['id'] = $value->id;
+            $datas['title'] = $value->title;
+            $datas['pengarang'] = $value->pengarang;
+            $datas['penerbit'] = $value->penerbit;
+            $datas['category'] = Category::where('id', $value->category_id)->first()->name;
+            $datas['category_id'] = $value->category_id;
+
+            if (!is_null($value->thumb)) {
+                $datas['thumb'] = env('APP_URL').'/thumb/'.$value->thumb;
+            } else {
+                $datas['thumb'] = null;
+            }
+            return $datas;
+        });
+        $category = Category::all();
+        return Inertia::render('Book/Index', ['books' => $books,'categories'=>$category]);
     }
 
     /**
@@ -28,11 +45,28 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        Book::create([
-            'title'=>$request->title,
-            'penerbit'=>$request->penerbit,
-            'pengarang'=>$request->pengarang,
-            ]);
+
+        if ($request->hasFile('thumb')) {
+            $file = $request->file('thumb');
+            $thumbname = time() . '-' . $file->getClientOriginalName();
+            $file->move(public_path() . '/thumb' . '/', $thumbname);
+            Book::create([
+                'title'=>$request->title,
+                'penerbit'=>$request->penerbit,
+                'pengarang'=>$request->pengarang,
+                'category_id'=>$request->category_id,
+                'thumb'=>$thumbname,
+                ]);
+        } else {
+            Book::create([
+                'title'=>$request->title,
+                'penerbit'=>$request->penerbit,
+                'pengarang'=>$request->pengarang,
+                'category_id'=>$request->category_id,
+
+                ]);
+        }
+
 
         return Redirect::route('books.index');
     }
@@ -47,11 +81,26 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $book->update([
-            'title'=>$request->title,
-            'penerbit'=>$request->penerbit,
-            'pengarang'=>$request->pengarang
-        ]);
+
+        if ($request->hasFile('thumb')) {
+            $file = $request->file('thumb');
+            $thumbname = time() . '-' . $file->getClientOriginalName();
+            $file->move(public_path() . '/thumb' . '/', $thumbname);
+            $book->update([
+                'title'=>$request->title,
+                'penerbit'=>$request->penerbit,
+                'pengarang'=>$request->pengarang,
+                'category_id'=>$request->category_id,
+                'thumb'=>$thumbname,
+                ]);
+        } else {
+            $book->update([
+                'title'=>$request->title,
+                'penerbit'=>$request->penerbit,
+                'pengarang'=>$request->pengarang,
+                'category_id'=>$request->category_id,
+                ]);
+        }
 
         return Redirect::route('books.index');
     }

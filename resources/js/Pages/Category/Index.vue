@@ -28,7 +28,7 @@
                                 <td class="px-4 py-2">No</td>
                                 <td class="px-4 py-2">Name</td>
 
-                                <td class="px-4 py-2">Action</td>
+                                <td class="px-4 py-2" style="width:300px;">Action</td>
                             </thead>
                             <tbody>
                                 <tr v-for="(category, index) in categories.data" :key="category.id">
@@ -37,7 +37,7 @@
 
                                     <td class="px-4 py-2 font-extrabold">
                                         <button
-                                            class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            class="bg-orange-500 text-white active:bg-orange-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="button" :data-id="category.id" :data-name="category.name"
                                             v-on:click="toggleModalUpdateData($event)"
                                         >
@@ -45,7 +45,7 @@
                                         </button>
                                         <Link
                                             @click="destroy(category.id)"
-                                            class="text-red-700"
+                                            class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             >Delete</Link
                                         >
                                     </td>
@@ -105,20 +105,16 @@
                                     <div class="w-full px-3">
                                         <label
                                             class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                            for="grid-password"
+                                            for="grid-name" required
                                         >
                                             Title
                                         </label>
                                         <input
                                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-password"
+                                            id="grid-name"
                                             type="text"
                                             v-model="form.name"
                                         />
-                                        <p class="text-gray-600 text-xs italic">
-                                            Make it as long and as crazy as
-                                            you'd like
-                                        </p>
                                     </div>
                                 </div>
                             </div>
