@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -28,32 +29,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        }
         Category::create([
             'name'=>$request->name,
             ]);
         return Redirect::route('categories.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Category  $categories
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Category $categories)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $categories
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $categories)
-    {
-        //
     }
 
     /**
@@ -65,6 +50,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        }
         $category->update([
             'name'=>$request->name,
             ]);

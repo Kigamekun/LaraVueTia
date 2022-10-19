@@ -6,6 +6,9 @@ use App\Models\{Book,Category};
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
+use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
@@ -16,23 +19,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::latest()->paginate(10);
-        $books->getCollection()->transform(function ($value) {
-            $datas = [];
-            $datas['id'] = $value->id;
-            $datas['title'] = $value->title;
-            $datas['pengarang'] = $value->pengarang;
-            $datas['penerbit'] = $value->penerbit;
-            $datas['category'] = Category::where('id', $value->category_id)->first()->name;
-            $datas['category_id'] = $value->category_id;
-
-            if (!is_null($value->thumb)) {
-                $datas['thumb'] = env('APP_URL').'/thumb/'.$value->thumb;
-            } else {
-                $datas['thumb'] = null;
-            }
-            return $datas;
-        });
+        $books = new BookCollection(BookResource::collection(Book::latest()->paginate(10)));
         $category = Category::all();
         return Inertia::render('Book/Index', ['books' => $books,'categories'=>$category]);
     }
@@ -45,6 +32,18 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'penerbit' => 'required',
+            'pengarang' => 'required',
+            'category_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        }
+
+
 
         if ($request->hasFile('thumb')) {
             $file = $request->file('thumb');
@@ -63,7 +62,6 @@ class BookController extends Controller
                 'penerbit'=>$request->penerbit,
                 'pengarang'=>$request->pengarang,
                 'category_id'=>$request->category_id,
-
                 ]);
         }
 
@@ -81,6 +79,15 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'penerbit' => 'required',
+            'pengarang' => 'required',
+            'category_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        }
 
         if ($request->hasFile('thumb')) {
             $file = $request->file('thumb');
@@ -92,14 +99,14 @@ class BookController extends Controller
                 'pengarang'=>$request->pengarang,
                 'category_id'=>$request->category_id,
                 'thumb'=>$thumbname,
-                ]);
+            ]);
         } else {
             $book->update([
                 'title'=>$request->title,
                 'penerbit'=>$request->penerbit,
                 'pengarang'=>$request->pengarang,
                 'category_id'=>$request->category_id,
-                ]);
+            ]);
         }
 
         return Redirect::route('books.index');
