@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -27,18 +28,14 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        if ($request->validated()) {
+            Category::create([
+                'name'=>$request->name,
+                ]);
+            return Redirect::route('categories.index');
         }
-        Category::create([
-            'name'=>$request->name,
-            ]);
-        return Redirect::route('categories.index');
     }
 
     /**
@@ -48,18 +45,14 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $categories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(StoreCategoryRequest $request, Category $category)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['statusCode'=>401,'message'=>'You got an error while validating the form.','errors'=>$validator->errors()], 401);
+        if ($request->validated()) {
+            $category->update([
+                'name'=>$request->name,
+                ]);
+            return Redirect::route('categories.index');
         }
-        $category->update([
-            'name'=>$request->name,
-            ]);
-        return Redirect::route('categories.index');
     }
 
     /**
